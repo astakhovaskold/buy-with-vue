@@ -14,13 +14,17 @@
                 class="accordion"
                 :things="item"
                 :group="key"
+                :exchange="USDConvert"
                 @added="addToCart"
             />
           </v-col>
         </v-row>
 
         <v-row v-if="cart.length">
-          <Cart :cart="cart" @deleted="deleteFromCart" />
+          <Cart
+              :cart="cart"
+              :exchange="USDConvert"
+              @deleted="deleteFromCart" />
         </v-row>
       </v-container>
     </v-main>
@@ -43,9 +47,15 @@ export default {
       goods: [],
       names: {},
       cart: [],
+      currency: {
+        usd: 76.8
+      }
     }
   },
   methods: {
+    USDConvert(usd) {
+      return (+usd * this.currency.usd).toFixed(2)
+    },
     async getDataByFetch(url) {
       const response = await fetch(url, {
         method: 'GET',

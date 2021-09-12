@@ -22,12 +22,21 @@
       >
         <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ item.price }}</td>
+        <td>{{ exchange(item.price) }}</td>
         <td>
           <button @click="$emit('deleted', {thing: item, key})">Удалить</button>
         </td>
       </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"></td>
+          <td>Итого:</td>
+          <td>
+            <b>{{ exchange(total) }} RUB</b>
+          </td>
+        </tr>
+      </tfoot>
     </template>
   </v-simple-table>
 </template>
@@ -36,15 +45,18 @@
 export default {
   name: 'Cart',
   props: {
-    cart: Array
+    cart: Array,
+    exchange: Function
   },
   data() {
     return {
 
     }
   },
-  updated() {
-    console.log('Cart', this.cart)
+  computed: {
+    total() {
+      return this.cart.reduce((prev, cur) => (prev + cur.price) * cur.quantity, 0)
+    }
   }
 }
 </script>

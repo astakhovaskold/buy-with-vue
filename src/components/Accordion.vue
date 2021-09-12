@@ -13,7 +13,7 @@
                   @click="$emit('added', {thing, key})"
               >
                 <td>{{ thing.name }} ({{ thing.count }})</td>
-                <td class="table-price">{{ thing.price }}</td>
+                <td class="table-price">{{ exchange(thing.price) }}</td>
               </tr>
               </tbody>
             </template>
@@ -29,7 +29,8 @@
     name: 'Accordion',
     props: {
       things: Array,
-      group: String
+      group: String,
+      exchange: Function
     },
     data() {
       return {
