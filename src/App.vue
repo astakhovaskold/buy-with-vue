@@ -24,7 +24,9 @@
           <Cart
               :cart="cart"
               :exchange="USDConvert"
-              @deleted="deleteFromCart" />
+              :quantity="changeQuantity"
+              @deleted="deleteFromCart"
+          />
         </v-row>
       </v-container>
     </v-main>
@@ -84,27 +86,42 @@ export default {
       }
 
       current.count > 0 ? current.count-- : current.count = 0
-
-      // console.log(this.cart)
     },
-    deleteFromCart(data) {
-      // console.log(data)
+    deleteFromCart(thing) {
+      this.changeQuantity(0, thing)
+    },
+    removeFromCart(thing) {
+      const index = this.getCartItemIndex(thing)
+      this.cart.splice(index, 1)
+    },
+    changeQuantity(e, thing) {
+      const cartItem = this.getCartItem(thing)
+      const goodsItem = this.getGoodsItem(thing)
 
-      const index = this.cart.findIndex(c => c.id === data.thing.id)
-      const cart = this.cart[index]
+      const val = e.target?.value || e
+      const quantity = val > cartItem.store ? cartItem.store : val
 
-      const currentIdx = this.goods[data.thing.group].findIndex(c => c.id === data.thing.id)
-      const current = this.goods[data.thing.group][currentIdx]
-      current.count++
+      const diff = quantity < 0 ? cartItem.quantity : cartItem.quantity - quantity
+      cartItem.quantity = cartItem.quantity + -diff
+      goodsItem.count = goodsItem.count - -diff
 
-      console.log(currentIdx)
-
-      if (cart.quantity - 1) {
-        cart.count = data.thing.count
-        cart.quantity--
-      } else {
-        this.cart.splice(index, 1)
+      if (val > cartItem.store) {
+        e.target.value = cartItem.store
       }
+
+      if (cartItem.quantity <= 0) {
+        this.removeFromCart(thing)
+      }
+    },
+    getCartItemIndex(thing) {
+      return this.cart.findIndex(c => c.id === thing.id)
+    },
+    getCartItem(thing) {
+      return this.cart.find(c => c.id === thing.id)
+    },
+    getGoodsItem(thing) {
+      const currentIdx = this.goods[thing.group].findIndex(c => c.id === thing.id)
+      return this.goods[thing.group][currentIdx]
     }
   },
   created() {
@@ -129,6 +146,7 @@ export default {
           name: this.names[item.G]['B'][item.T]['N'],
           group: name.G,
           count: item.P,
+          store: item.P,
           price: item.C,
         }
 

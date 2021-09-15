@@ -12,7 +12,7 @@
                   :key="key"
                   @click="$emit('added', {thing, key})"
               >
-                <td>{{ thing.name }} ({{ thing.count }})</td>
+                <td class="table-name">{{ thing.name }} ({{ thing.count }})</td>
                 <td class="table-price">{{ exchange(thing.price) }}</td>
               </tr>
               </tbody>
@@ -43,9 +43,15 @@
   }
 </script>
 
-<style scoped>
-  .table-price {
-    background-color: #eee;
-    text-align: center;
+<style scoped lang="scss">
+  .table {
+    &-name {
+      cursor: pointer;
+    }
+
+    &-price {
+      background-color: #eee;
+      text-align: center;
+    }
   }
 </style>

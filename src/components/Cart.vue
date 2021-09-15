@@ -21,19 +21,22 @@
           :key="key"
       >
         <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ exchange(item.price) }}</td>
+        <td class="quantity">
+          <div><input type="number" :value="item.quantity" @change="quantity($event, item)" class="quantity-input"> шт.</div>
+          <div v-if="(item.store - item.quantity) <= low" class="low">Количество ограничено</div>
+        </td>
+        <td><span class="big">{{ format(exchange(item.price)) }}</span>/шт.</td>
         <td>
-          <button @click="$emit('deleted', {thing: item, key})">Удалить</button>
+          <button @click="$emit('deleted', item)">Удалить</button>
         </td>
       </tr>
       </tbody>
       <tfoot>
-        <tr>
+        <tr class="total">
           <td colspan="2"></td>
-          <td>Итого:</td>
+          <td class="total-text">Итого:</td>
           <td>
-            <b>{{ exchange(total) }} RUB</b>
+            <b>{{ format(exchange(total)) }}</b>
           </td>
         </tr>
       </tfoot>
@@ -46,11 +49,17 @@ export default {
   name: 'Cart',
   props: {
     cart: Array,
-    exchange: Function
+    exchange: Function,
+    quantity: Function
   },
   data() {
     return {
-
+      low: 1
+    }
+  },
+  methods: {
+    format(number) {
+      return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(number)
     }
   },
   computed: {
@@ -61,8 +70,42 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .cart {
-    margin: 120px auto 0;
+    margin: 120px auto 60px;
+
+    tbody td {
+      height: 90px !important;
+    }
+  }
+
+  .big  {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .low {
+    border: 1px dashed darkorange;
+    background-color: #eee;
+    padding: 5px;
+    margin-top: 10px;
+  }
+
+  .quantity {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &-input {
+      width: 50px;
+      padding: 5px;
+      border: 1px solid darkgray;
+    }
+  }
+
+  .total {
+    &-text {
+      text-align: right;
+    }
   }
 </style>
