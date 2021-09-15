@@ -25,7 +25,7 @@
           <div><input type="number" :value="item.quantity" @change="quantity($event, item)" class="quantity-input"> шт.</div>
           <div v-if="(item.store - item.quantity) <= low" class="low">Количество ограничено</div>
         </td>
-        <td><span class="big">{{ format(exchange(item.price)) }}</span>/шт.</td>
+        <td><span class="big">{{ format(exchange(item.price, 'usd')) }}</span>/шт.</td>
         <td>
           <button @click="$emit('deleted', item)">Удалить</button>
         </td>
@@ -36,7 +36,7 @@
           <td colspan="2"></td>
           <td class="total-text">Итого:</td>
           <td>
-            <b>{{ format(exchange(total)) }}</b>
+            <b>{{ format(exchange(total, 'usd')) }}</b>
           </td>
         </tr>
       </tfoot>

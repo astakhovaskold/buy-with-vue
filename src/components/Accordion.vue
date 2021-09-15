@@ -13,7 +13,7 @@
                   @click="$emit('added', {thing, key})"
               >
                 <td class="table-name">{{ thing.name }} ({{ thing.count }})</td>
-                <td class="table-price">{{ exchange(thing.price) }}</td>
+                <td class="table-price">{{ exchange(thing.price, 'usd') }}</td>
               </tr>
               </tbody>
             </template>

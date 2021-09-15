@@ -14,7 +14,7 @@
                 class="accordion"
                 :things="item"
                 :group="key"
-                :exchange="USDConvert"
+                :exchange="convert"
                 @added="addToCart"
             />
           </v-col>
@@ -23,7 +23,7 @@
         <v-row v-if="cart.length">
           <Cart
               :cart="cart"
-              :exchange="USDConvert"
+              :exchange="convert"
               :quantity="changeQuantity"
               @deleted="deleteFromCart"
           />
@@ -55,8 +55,8 @@ export default {
     }
   },
   methods: {
-    USDConvert(usd) {
-      return (+usd * this.currency.usd).toFixed(2)
+    convert(value, currency) {
+      return (+value * this.currency[currency]).toFixed(2)
     },
     async getDataByFetch(url) {
       const response = await fetch(url, {
@@ -122,40 +122,44 @@ export default {
     getGoodsItem(thing) {
       const currentIdx = this.goods[thing.group].findIndex(c => c.id === thing.id)
       return this.goods[thing.group][currentIdx]
+    },
+    getRandomValue(min = 0, max = 0) {
+      return min + (Math.random() * 100).toFixed(2) * (max + 1 - min)
     }
   },
   created() {
-    (async () => {
-      const goods = await axios
-          .get('http://localhost:8080/data/data.json')
-          .then(res => res.data.Value.Goods)
+      setInterval(async () => {
+        const goods = await axios
+            .get('http://localhost:8080/data/data.json')
+            .then(res => res.data.Value.Goods)
 
-      const names = await axios
-          .get('http://localhost:8080/data/names.json')
-          .then(res => res.data)
+        const names = await axios
+            .get('http://localhost:8080/data/names.json')
+            .then(res => res.data)
 
-      Object.assign(this.names, names)
+        Object.assign(this.names, names)
 
-      this.goods = goods.reduce((r, item) => {
-        const name = this.names[item.G];
+        this.goods = goods.reduce((r, item) => {
+          const name = this.names[item.G];
 
-        r[name.G] = r[name.G] || []
+          r[name.G] = r[name.G] || []
 
-        const obj = {
-          id: item.T,
-          name: this.names[item.G]['B'][item.T]['N'],
-          group: name.G,
-          count: item.P,
-          store: item.P,
-          price: item.C,
-        }
+          const obj = {
+            id: item.T,
+            name: this.names[item.G]['B'][item.T]['N'],
+            group: name.G,
+            count: item.P,
+            store: item.P,
+            price: item.C,
+          }
 
-        r[name.G].push(obj)
-        return r;
-      }, {});
+          r[name.G].push(obj)
+          return r;
+        }, {});
 
-      // console.log(this.goods)
-    })();
+        const rand = this.getRandomValue(20, 80)
+        this.currency.usd = rand
+      }, 5000)
   }
 };
 </script>
