@@ -36,7 +36,6 @@
 <script>
 import Accordion from './components/Accordion';
 import Cart from './components/Cart';
-import axios from 'axios'
 
 export default {
   name: 'App',
@@ -128,38 +127,37 @@ export default {
     }
   },
   created() {
-      setInterval(async () => {
-        const goods = await axios
-            .get('http://localhost:8080/data/data.json')
-            .then(res => res.data.Value.Goods)
+    (async () => {
+      const goods = await this.getDataByFetch('/data/data.json')
+          .then(res => res.Value.Goods)
 
-        const names = await axios
-            .get('http://localhost:8080/data/names.json')
-            .then(res => res.data)
+      const names = await this.getDataByFetch('/data/names.json')
 
-        Object.assign(this.names, names)
+      Object.assign(this.names, names)
 
-        this.goods = goods.reduce((r, item) => {
-          const name = this.names[item.G];
+      this.goods = goods.reduce((r, item) => {
+        const name = this.names[item.G];
 
-          r[name.G] = r[name.G] || []
+        r[name.G] = r[name.G] || []
 
-          const obj = {
-            id: item.T,
-            name: this.names[item.G]['B'][item.T]['N'],
-            group: name.G,
-            count: item.P,
-            store: item.P,
-            price: item.C,
-          }
+        const obj = {
+          id: item.T,
+          name: this.names[item.G]['B'][item.T]['N'],
+          group: name.G,
+          count: item.P,
+          store: item.P,
+          price: item.C,
+        }
 
-          r[name.G].push(obj)
-          return r;
-        }, {});
+        r[name.G].push(obj)
+        return r;
+      }, {});
+    })();
 
-        const rand = this.getRandomValue(20, 80)
-        this.currency.usd = rand
-      }, 5000)
+    setInterval(() => {
+      const rand = this.getRandomValue(20, 80)
+      this.currency.usd = rand
+    }, 15000)
   }
 };
 </script>

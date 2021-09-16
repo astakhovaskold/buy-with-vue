@@ -54,7 +54,7 @@ export default {
   },
   data() {
     return {
-      low: 1
+      low: 2
     }
   },
   methods: {
@@ -100,6 +100,7 @@ export default {
       width: 50px;
       padding: 5px;
       border: 1px solid darkgray;
+      outline: none;
     }
   }
 
