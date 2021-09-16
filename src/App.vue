@@ -123,7 +123,7 @@ export default {
       return this.goods[thing.group][currentIdx]
     },
     getRandomValue(min = 0, max = 0) {
-      return min + (Math.random() * 100).toFixed(2) * (max + 1 - min)
+      return (min + Math.random() * (max + 1 - min)).toFixed(2)
     }
   },
   created() {
