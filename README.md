@@ -1,4 +1,4 @@
-# frontend
+# Buy With Vue
 
 ## Project setup
 ```
